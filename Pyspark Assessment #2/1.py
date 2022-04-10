@@ -1,5 +1,5 @@
 from pyspark.sql.functions import sum as _sum
-from pyspark.sql.functions import hour, desc, to_date, col, year, month
+from pyspark.sql.functions import hour, desc, to_date, col, year, month, quarter
 simpleData = (("i-101","85123A","ABC",150,6,"2021-12-01 08:16:00","c-1001"),
 ("i-102","85124A","XYZ",110,6,"2021-12-01 09:12:00","c-1002"),
 ("i-103","85125A","MNO",100,4,"2021-12-01 10:00:00","c-1003"),
@@ -35,7 +35,7 @@ df.groupBy(year("invoice_date")).agg(_sum(col("quantity")*col("unit_price"))).al
 df.groupBy(month("invoice_date")).agg(_sum(col("quantity")*col("unit_price"))).alias("total_sales").show()
 
 # Total sales by quarter
-df.groupBy(year("invoice_date")).agg(_sum(col("quantity")*col("unit_price"))).alias("total_sales").show()
+df.groupBy(quarter("invoice_date")).agg(_sum(col("quantity")*col("unit_price"))).alias("total_sales").show()
 
 #Sort based on sales
 df3 = df.withColumn("Sales",col("quantity")*col("unit_price"))
