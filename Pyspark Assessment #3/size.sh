@@ -1,5 +1,6 @@
-# get user in put
-echo "Please enter the path of the file you want to check:"
-read path
+for csvfile in *.csv;
+do
+    wc -l $csvfile
+done
 
-cat $path | wc -l
+echo "Total Count : $(cat *.csv | wc -l)"

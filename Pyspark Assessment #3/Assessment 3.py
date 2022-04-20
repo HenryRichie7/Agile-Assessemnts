@@ -22,8 +22,10 @@ df2.select("tpep_pickup_datetime","tpep_pickup_datetime_IST","tpep_dropoff_datet
 df3 = df2.withColumn("TravelTime",(to_timestamp(col("tpep_dropoff_datetime")).cast("long"))- to_timestamp(col("tpep_pickup_datetime")).cast("long"))
 df3.show()
 
-# Write the dataframe into csv files
-df3.coalesce(1).write.partitionBy('VendorID').mode("overwrite").format("csv").option("header","true").save("dbfs:/FileStore/df/Data_VendorID1")
+# Write the dataframe into csv files as 3 partition
+parted_df = df3.repartition(3)
+display(parted_df)
+parted_df.write.format("csv").option("header","true").save("dbfs:/FileStore/df/Parted.csv")
 
 # Build a temp view on top of the data frame
 df3.createOrReplaceTempView("Temp_tab")
@@ -32,4 +34,4 @@ df3.createOrReplaceTempView("Temp_tab")
 df3.groupBy(col("VendorID")).agg(_sum(col("fare_amount"))).show()
 
 # write the output into single CSV file.
-df3.coalesce(1).write.format("com.databricks.spark.csv").option("header", "true").save("dbfs:/FileStore/df/AllOutputs1.csv")
+#df3.coalesce(1).write.format("com.databricks.spark.csv").option("header", "true").save("dbfs:/FileStore/df/AllOutputs1.csv")
